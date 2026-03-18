@@ -6,7 +6,7 @@ SAME70_BUILD_DIR := SAME70
 SAME70_TARGET := $(SAME70_BUILD_DIR)/libLibMbedTls.a
 
 # ============================================================
-# Source files — only the modules enabled in config-rrf.h
+# Source files — only the modules enabled in config-same70.h
 # ============================================================
 
 # TLS/SSL layer
@@ -102,7 +102,7 @@ SAME70_INCLUDES := \
 # ============================================================
 SAME70_DEFINES := \
 	-D__SAME70Q20B__ \
-	-DMBEDTLS_CONFIG_FILE=\"config-rrf.h\"
+	-DMBEDTLS_CONFIG_FILE=\"config-same70.h\"
 
 # ============================================================
 # Compiler flags

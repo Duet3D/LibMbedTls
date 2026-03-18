@@ -1,17 +1,23 @@
 /**
- * Custom Mbed TLS configuration for RepRapFirmware
+ * Custom Mbed TLS configuration for RepRapFirmware — SAME5x (Duet 3 Mini 5+)
  *
  * Minimal TLS 1.2 server configuration for HTTPS support on embedded ARM targets.
  * Based on the Suite B profile (RFC 6460) — ECC only, no RSA.
  *
- * Target MCUs: SAME70 (Cortex-M7), SAME54 (Cortex-M4)
- * Both have hardware AES with GCM support.
+ * Target MCU: SAME54P20A (Cortex-M4, 256 KB RAM)
+ * Has hardware AES with GCM support.
  *
  * mbedTLS 3.6 LTS
+ *
+ * Memory saving measures vs config-same70.h:
+ *  - SSL_IN_CONTENT_LEN reduced to 2048 (MBEDTLS_SSL_RECORD_SIZE_LIMIT / RFC 8449
+ *    ensures compliant browsers will not send records larger than this)
+ *  - SSL_OUT_CONTENT_LEN reduced to 2048
+ *  - Session cache limited to 2 entries
  */
 
-#ifndef MBEDTLS_CONFIG_RRF_H
-#define MBEDTLS_CONFIG_RRF_H
+#ifndef MBEDTLS_CONFIG_SAME5X_H
+#define MBEDTLS_CONFIG_SAME5X_H
 
 /* ============================================================
  * System support
@@ -89,6 +95,10 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_SSL_CACHE_C
 #define MBEDTLS_SSL_ALL_ALERT_MESSAGES
 
+/* Use hardware AES-GCM peripheral (via gcm_hardware.cpp / AesGcm.cpp).
+   gcm_ALT replaces the software gcm.c entirely; gcm_alt.h defines the context. */
+#define MBEDTLS_GCM_ALT
+
 /* ============================================================
  * ECC curves — secp256r1 and secp384r1 (Suite B)
  * ============================================================ */
@@ -143,11 +153,16 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_ECP_NIST_OPTIM
 
 /* ============================================================
- * Buffer sizes — keep small for embedded
+ * Buffer sizes — reduced for SAME54 (256 KB RAM)
+ *
+ * MBEDTLS_SSL_RECORD_SIZE_LIMIT (RFC 8449) is enabled above, so the server
+ * advertises IN_CONTENT_LEN to the client during the handshake.  Any
+ * RFC 8449-compliant peer (all modern browsers) will limit its outgoing
+ * record size accordingly, so decryption never needs more than this.
  * ============================================================ */
-#define MBEDTLS_SSL_IN_CONTENT_LEN     4096
-#define MBEDTLS_SSL_OUT_CONTENT_LEN    4096
-#define MBEDTLS_SSL_CACHE_DEFAULT_MAX_ENTRIES  4
+#define MBEDTLS_SSL_IN_CONTENT_LEN     2048
+#define MBEDTLS_SSL_OUT_CONTENT_LEN    2048
+#define MBEDTLS_SSL_CACHE_DEFAULT_MAX_ENTRIES  2
 #define MBEDTLS_SSL_CACHE_DEFAULT_TIMEOUT      3600
 
 /* Single entropy source (hardware TRNG) */
@@ -165,4 +180,4 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 /* Do NOT include check_config.h here — build_info.h handles the correct
  * include order: user config → config_adjust_* → check_config.h */
 
-#endif /* MBEDTLS_CONFIG_RRF_H */
+#endif /* MBEDTLS_CONFIG_SAME5X_H */

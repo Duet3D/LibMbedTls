@@ -105,7 +105,7 @@ SAME5x_INCLUDES := \
 # ============================================================
 SAME5x_DEFINES := \
 	-D__SAME54P20A__ \
-	-DMBEDTLS_CONFIG_FILE=\"config-rrf.h\"
+	-DMBEDTLS_CONFIG_FILE=\"config-same5x.h\"
 
 # ============================================================
 # Compiler flags — Cortex-M4 with FPv4
