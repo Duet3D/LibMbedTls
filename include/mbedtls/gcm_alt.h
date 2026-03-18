@@ -4,14 +4,15 @@
  * Hardware GCM context for MBEDTLS_GCM_ALT.
  * Used on SAME70 and SAME5x where the on-chip AES peripheral supports GCM.
  *
- * The context stores the key and (for the streaming API) accumulates IV, AAD,
- * and ciphertext/plaintext until mbedtls_gcm_finish() is called, at which
- * point the one-shot hardware driver is invoked.
+ * This ALT implementation delegates the final crypto operation to CoreN2G
+ * AesGcm.cpp and uses a single shared staging buffer in the driver for the
+ * mbedTLS starts/update/finish API.
  *
- * TLS 1.2 AES-GCM record sizes are bounded (max ~16 KB), so the streaming
- * buffers use fixed sizes.  If hardware GCM is not available for the current
- * chip AES_GCM_NOT_AVAILABLE will be defined and the functions fall back to
- * returning an error — the software gcm.c must not be linked in that case.
+ * Important runtime constraint:
+ * - Only one mbedtls_gcm_context can own the shared staging buffer at a time.
+ * - starts()/update()/finish() for a second active context are rejected with
+ *   MBEDTLS_ERR_GCM_BAD_INPUT until the current owner completes or is freed.
+ * - One-shot crypt_and_tag()/auth_decrypt() do not use the shared buffer.
  */
 
 #ifndef MBEDTLS_GCM_ALT_H
@@ -24,42 +25,34 @@
 extern "C" {
 #endif
 
-/* Maximum sizes matching TLS 1.2 record limits */
-#define MBEDTLS_GCM_ALT_MAX_KEY_BYTES   32          /* AES-256 */
-#define MBEDTLS_GCM_ALT_MAX_IV_BYTES    12          /* GCM standard nonce */
-#define MBEDTLS_GCM_ALT_MAX_AAD_BYTES   32          /* TLS additional data is ~13 bytes */
-#define MBEDTLS_GCM_ALT_MAX_DATA_BYTES  16384       /* TLS max record payload */
+/* Maximum sizes for staged record data */
+#define MBEDTLS_GCM_ALT_MAX_KEY_BYTES   32u
+#define MBEDTLS_GCM_ALT_MAX_IV_BYTES    12u
+#define MBEDTLS_GCM_ALT_MAX_AAD_BYTES   32u
 
-/**
- * \brief  Hardware GCM context.
- *
- * For crypt_and_tag / auth_decrypt the key is set once via setkey() and the
- * operation is driven entirely by the single crypt_and_tag() call.
- *
- * The streaming path (starts / update_ad / update / finish) accumulates data
- * into fixed buffers and executes the hardware on finish().
- */
+#if defined(MBEDTLS_SSL_IN_CONTENT_LEN)
+#define MBEDTLS_GCM_ALT_MAX_DATA_BYTES  ((size_t)MBEDTLS_SSL_IN_CONTENT_LEN)
+#else
+#define MBEDTLS_GCM_ALT_MAX_DATA_BYTES  16384u
+#endif
+
 typedef struct mbedtls_gcm_context
 {
-    /* Key material set by mbedtls_gcm_setkey() */
     unsigned char   key[MBEDTLS_GCM_ALT_MAX_KEY_BYTES];
-    size_t          key_len;            /*!< key length in bytes */
+    size_t          key_len;
 
-    /* State set by mbedtls_gcm_starts() */
     unsigned char   iv[MBEDTLS_GCM_ALT_MAX_IV_BYTES];
     size_t          iv_len;
-    int             mode;               /*!< MBEDTLS_GCM_ENCRYPT or MBEDTLS_GCM_DECRYPT */
+    int             mode;
 
-    /* Accumulated AAD (update_ad) */
     unsigned char   aad[MBEDTLS_GCM_ALT_MAX_AAD_BYTES];
     size_t          aad_len;
 
-    /* Input data accumulated during update() */
-    unsigned char   buf[MBEDTLS_GCM_ALT_MAX_DATA_BYTES];
+    /* Number of bytes currently staged in the driver's single shared
+     * global payload buffer (not in this context struct).
+     * Valid only while this context owns the shared buffer. */
     size_t          buf_len;
 
-    /* Output buffer pointer supplied by the first update() call.
-     * The hardware writes the result here during finish(). */
     unsigned char  *output;
 } mbedtls_gcm_context;
 

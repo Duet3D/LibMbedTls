@@ -1,5 +1,5 @@
 /*
- * gcm_hardware.cpp
+ * aes_gcm_hardware.cpp
  *
  * Hardware GCM implementation for MBEDTLS_GCM_ALT.
  * Delegates to the CoreN2G AesGcm driver (aes_gcm_encrypt / aes_gcm_decrypt)
@@ -17,7 +17,6 @@
 #if defined(MBEDTLS_GCM_C) && defined(MBEDTLS_GCM_ALT)
 
 #include "mbedtls/gcm.h"
-#include "mbedtls/cipher.h"
 #include "mbedtls/platform_util.h"
 #include "mbedtls/error.h"
 
@@ -51,6 +50,15 @@ extern "C" int aes_gcm_decrypt(
     const uint8_t *ciphertext, size_t ciphertext_len,
     uint8_t *plaintext,
     const uint8_t *tag, size_t tag_len) noexcept;
+
+/* AesGcm reconfigures the shared AES peripheral; invalidate ECB cache afterwards. */
+extern "C" void aes_ecb_invalidate_cache() noexcept;
+
+/* Single shared staging buffer for mbedtls_gcm_starts/update/finish path.
+ * Only one streaming context may own this at a time; contending contexts are
+ * rejected with MBEDTLS_ERR_GCM_BAD_INPUT until ownership is released. */
+static unsigned char gcm_staging_buf[MBEDTLS_GCM_ALT_MAX_DATA_BYTES];
+static mbedtls_gcm_context *gcm_staging_owner = nullptr;
 
 /* ------------------------------------------------------------------ */
 
@@ -94,6 +102,11 @@ extern "C" int mbedtls_gcm_starts(mbedtls_gcm_context *ctx,
     /* Hardware only supports 12-byte IVs */
     if (iv_len != 12u)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
+
+    if (gcm_staging_owner != nullptr && gcm_staging_owner != ctx)
+        return MBEDTLS_ERR_GCM_BAD_INPUT;
+
+    gcm_staging_owner = ctx;
 
     ctx->mode    = mode;
     ctx->iv_len  = iv_len;
@@ -149,8 +162,11 @@ extern "C" int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
     if (ctx->buf_len + input_length > MBEDTLS_GCM_ALT_MAX_DATA_BYTES)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
+    if (gcm_staging_owner != ctx)
+        return MBEDTLS_ERR_GCM_BAD_INPUT;
+
     /* Accumulate input; remember output pointer for finish() */
-    memcpy(ctx->buf + ctx->buf_len, input, input_length);
+    memcpy(gcm_staging_buf + ctx->buf_len, input, input_length);
     ctx->buf_len += input_length;
     if (ctx->output == nullptr)
         ctx->output = output;
@@ -173,8 +189,11 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
     if (tag_len == 0u || tag_len > 16u)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
+    if (gcm_staging_owner != ctx)
+        return MBEDTLS_ERR_GCM_BAD_INPUT;
+
     /* mbedtls_gcm_crypt_and_tag passes the output buffer to update() and
-     * NULL to finish().  Retrieve the pointer stored during update(). */
+     * NULL to finish(). Retrieve the pointer stored during update(). */
     unsigned char *out = (output != nullptr) ? output : ctx->output;
 
     /* output may be NULL if no data was passed to update() */
@@ -194,7 +213,7 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
             ctx->key, ctx->key_len,
             ctx->iv,  ctx->iv_len,
             ctx->aad, ctx->aad_len,
-            ctx->buf, data_len,
+            gcm_staging_buf, data_len,
             out,
             tag,      tag_len);
     }
@@ -206,10 +225,14 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
             ctx->key, ctx->key_len,
             ctx->iv,  ctx->iv_len,
             ctx->aad, ctx->aad_len,
-            ctx->buf, data_len,
+            gcm_staging_buf, data_len,
             out,
             tag,      tag_len);
     }
+
+    aes_ecb_invalidate_cache();
+
+    gcm_staging_owner = nullptr;
 
     if (output_length != nullptr)
         *output_length = (ret == 0) ? data_len : 0u;
@@ -256,7 +279,7 @@ extern "C" int mbedtls_gcm_crypt_and_tag(mbedtls_gcm_context *ctx,
     }
     else
     {
-        /* Decrypt: return ciphertext→plaintext and the computed tag.
+        /* Decrypt: return ciphertext->plaintext and the computed tag.
          * mbedtls_gcm_auth_decrypt does its own constant-time tag check. */
         ret = aes_gcm_decrypt_and_tag(ctx->key, ctx->key_len,
                                       iv, iv_len,
@@ -265,6 +288,8 @@ extern "C" int mbedtls_gcm_crypt_and_tag(mbedtls_gcm_context *ctx,
                                       output,
                                       tag, tag_len);
     }
+
+    aes_ecb_invalidate_cache();
 
     return (ret == 0) ? 0 : MBEDTLS_ERR_GCM_BAD_INPUT;
 }
@@ -297,6 +322,8 @@ extern "C" int mbedtls_gcm_auth_decrypt(mbedtls_gcm_context *ctx,
                                     output,
                                     tag, tag_len);
 
+    aes_ecb_invalidate_cache();
+
     if (ret == -2)
         return MBEDTLS_ERR_GCM_AUTH_FAILED;
 
@@ -307,10 +334,11 @@ extern "C" void mbedtls_gcm_free(mbedtls_gcm_context *ctx)
 {
     if (ctx == nullptr)
         return;
+    if (gcm_staging_owner == ctx)
+        gcm_staging_owner = nullptr;
     mbedtls_platform_zeroize(ctx, sizeof(*ctx));
 }
 
-/* Self-test is not supported with ALT implementation */
 #if defined(MBEDTLS_SELF_TEST)
 extern "C" int mbedtls_gcm_self_test(int verbose)
 {

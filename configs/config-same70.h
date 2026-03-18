@@ -89,8 +89,11 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_SSL_CACHE_C
 #define MBEDTLS_SSL_ALL_ALERT_MESSAGES
 
-/* Use hardware AES-GCM peripheral (via gcm_hardware.cpp / AesGcm.cpp).
-   gcm_ALT replaces the software gcm.c entirely; gcm_alt.h defines the context. */
+/* Use hardware AES-ECB and AES-GCM.
+   AES_ALT (aes_hardware.cpp + CoreN2G AesEcb.cpp) replaces software aes.c.
+   GCM_ALT (aes_gcm_hardware.cpp + CoreN2G AesGcm.cpp) replaces software gcm.c
+   and uses a single shared staging buffer in the LibMbedTls driver. */
+#define MBEDTLS_AES_ALT
 #define MBEDTLS_GCM_ALT
 
 /* ============================================================

@@ -79,8 +79,10 @@ SAME5x_C_SRCS := $(SAME5x_TLS_SRCS) $(SAME5x_X509_SRCS) $(SAME5x_CRYPTO_SRCS) $(
 # Hardware drivers (C++)
 SAME5x_CPP_SRCS := \
 	drivers/entropy_hardware.cpp \
-	drivers/gcm_hardware.cpp \
+	drivers/aes_hardware.cpp \
+	drivers/aes_gcm_hardware.cpp \
 	drivers/platform_snprintf.cpp
+
 # Include paths
 # ============================================================
 SAME5x_INCLUDES := \

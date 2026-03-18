@@ -79,8 +79,10 @@ SAME70_C_SRCS := $(SAME70_TLS_SRCS) $(SAME70_X509_SRCS) $(SAME70_CRYPTO_SRCS) $(
 # Hardware drivers (C++)
 SAME70_CPP_SRCS := \
 	drivers/entropy_hardware.cpp \
-	drivers/gcm_hardware.cpp \
+	drivers/aes_hardware.cpp \
+	drivers/aes_gcm_hardware.cpp \
 	drivers/platform_snprintf.cpp
+
 # Include paths
 # ============================================================
 SAME70_INCLUDES := \
