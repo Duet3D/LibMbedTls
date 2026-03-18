@@ -1073,7 +1073,8 @@
 #error "MBEDTLS_SSL_VARIABLE_BUFFER_LENGTH defined, but not all prerequisites"
 #endif
 
-#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT) && ( !defined(MBEDTLS_SSL_PROTO_TLS1_3) )
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT) && \
+    ( !defined(MBEDTLS_SSL_PROTO_TLS1_3) && !defined(MBEDTLS_SSL_PROTO_TLS1_2) )
 #error "MBEDTLS_SSL_RECORD_SIZE_LIMIT defined, but not all prerequisites"
 #endif
 

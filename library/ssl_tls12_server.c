@@ -354,6 +354,37 @@ static int ssl_parse_max_fragment_length_ext(mbedtls_ssl_context *ssl,
 }
 #endif /* MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
 
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT)
+MBEDTLS_CHECK_RETURN_CRITICAL
+static int ssl_parse_record_size_limit_ext(mbedtls_ssl_context *ssl,
+                                           const unsigned char *buf,
+                                           size_t len)
+{
+    uint16_t record_size_limit;
+
+    if (len != MBEDTLS_SSL_RECORD_SIZE_LIMIT_EXTENSION_DATA_LENGTH) {
+        MBEDTLS_SSL_DEBUG_MSG(1, ("bad client hello message"));
+        mbedtls_ssl_send_alert_message(ssl, MBEDTLS_SSL_ALERT_LEVEL_FATAL,
+                                       MBEDTLS_SSL_ALERT_MSG_ILLEGAL_PARAMETER);
+        return MBEDTLS_ERR_SSL_ILLEGAL_PARAMETER;
+    }
+
+    record_size_limit = MBEDTLS_GET_UINT16_BE(buf, 0);
+
+    if (record_size_limit < MBEDTLS_SSL_RECORD_SIZE_LIMIT_MIN) {
+        MBEDTLS_SSL_DEBUG_MSG(1, ("Invalid record size limit: %u Bytes",
+                                  record_size_limit));
+        mbedtls_ssl_send_alert_message(ssl, MBEDTLS_SSL_ALERT_LEVEL_FATAL,
+                                       MBEDTLS_SSL_ALERT_MSG_ILLEGAL_PARAMETER);
+        return MBEDTLS_ERR_SSL_ILLEGAL_PARAMETER;
+    }
+
+    ssl->session_negotiate->record_size_limit = record_size_limit;
+
+    return 0;
+}
+#endif /* MBEDTLS_SSL_RECORD_SIZE_LIMIT */
+
 #if defined(MBEDTLS_SSL_DTLS_CONNECTION_ID)
 MBEDTLS_CHECK_RETURN_CRITICAL
 static int ssl_parse_cid_ext(mbedtls_ssl_context *ssl,
@@ -1464,6 +1495,17 @@ read_record_header:
                 break;
 #endif /* MBEDTLS_SSL_DTLS_SRTP */
 
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT)
+            case MBEDTLS_TLS_EXT_RECORD_SIZE_LIMIT:
+                MBEDTLS_SSL_DEBUG_MSG(3, ("found record_size_limit extension"));
+
+                ret = ssl_parse_record_size_limit_ext(ssl, ext + 4, ext_size);
+                if (ret != 0) {
+                    return ret;
+                }
+                break;
+#endif /* MBEDTLS_SSL_RECORD_SIZE_LIMIT */
+
             default:
                 MBEDTLS_SSL_DEBUG_MSG(3, ("unknown extension found: %u (ignoring)",
                                           ext_id));
@@ -1865,6 +1907,31 @@ static void ssl_write_max_fragment_length_ext(mbedtls_ssl_context *ssl,
     *olen = 5;
 }
 #endif /* MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
+
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT)
+static void ssl_write_record_size_limit_ext(mbedtls_ssl_context *ssl,
+                                            unsigned char *buf,
+                                            size_t *olen)
+{
+    unsigned char *p = buf;
+    (void) ssl;
+
+    MBEDTLS_STATIC_ASSERT(
+        MBEDTLS_SSL_IN_CONTENT_LEN >= MBEDTLS_SSL_RECORD_SIZE_LIMIT_MIN,
+        "MBEDTLS_SSL_IN_CONTENT_LEN is less than the minimum record size limit");
+
+    MBEDTLS_SSL_DEBUG_MSG(3, ("server hello, record_size_limit extension (%d bytes)",
+                              MBEDTLS_SSL_IN_CONTENT_LEN));
+
+    MBEDTLS_PUT_UINT16_BE(MBEDTLS_TLS_EXT_RECORD_SIZE_LIMIT, p, 0);
+    p += 2;
+    MBEDTLS_PUT_UINT16_BE(MBEDTLS_SSL_RECORD_SIZE_LIMIT_EXTENSION_DATA_LENGTH, p, 0);
+    p += 2;
+    MBEDTLS_PUT_UINT16_BE(MBEDTLS_SSL_IN_CONTENT_LEN, p, 0);
+
+    *olen = 6;
+}
+#endif /* MBEDTLS_SSL_RECORD_SIZE_LIMIT */
 
 #if defined(MBEDTLS_KEY_EXCHANGE_SOME_ECDH_OR_ECDHE_1_2_ENABLED) || \
     defined(MBEDTLS_KEY_EXCHANGE_ECDSA_CERT_REQ_ALLOWED_ENABLED) || \
@@ -2298,6 +2365,11 @@ static int ssl_write_server_hello(mbedtls_ssl_context *ssl)
 
 #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
     ssl_write_max_fragment_length_ext(ssl, p + 2 + ext_len, &olen);
+    ext_len += olen;
+#endif
+
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT)
+    ssl_write_record_size_limit_ext(ssl, p + 2 + ext_len, &olen);
     ext_len += olen;
 #endif
 

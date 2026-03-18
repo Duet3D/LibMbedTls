@@ -304,7 +304,6 @@ int mbedtls_entropy_func(void *data, unsigned char *output, size_t len)
             ret = MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
             goto exit;
         }
-
         if ((ret = entropy_gather_internal(ctx)) != 0) {
             goto exit;
         }
