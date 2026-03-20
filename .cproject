@@ -119,7 +119,7 @@
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.1500000304" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
 							<builder buildPath="${workspace_loc:/LibMbedTls}/SAME70" id="cdt.managedbuild.builder.gnu.cross.1500000305" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1500000306" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1500000307" name="Optimization level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1500000307" name="Optimization level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.more" valueType="enumerated"/>
 								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1500000308" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1500000309" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
@@ -146,7 +146,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1500000312" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1500000313" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
-								<option id="gnu.cpp.compiler.option.optimization.level.1500000314" name="Optimization level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.optimization.level.1500000314" name="Optimization level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
 								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1500000315" name="Debug level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.1500000316" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
@@ -214,7 +214,7 @@
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.1500000504" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
 							<builder buildPath="${workspace_loc:/LibMbedTls}/SAME70" id="cdt.managedbuild.builder.gnu.cross.1500000505" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1500000506" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1500000507" name="Optimization level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1500000507" name="Optimization level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.debug" valueType="enumerated"/>
 								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1500000508" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1500000509" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
@@ -242,7 +242,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1500000513" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1500000514" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
-								<option id="gnu.cpp.compiler.option.optimization.level.1500000515" name="Optimization level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.optimization.level.1500000515" name="Optimization level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.debug" valueType="enumerated"/>
 								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1500000516" name="Debug level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.1500000517" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>

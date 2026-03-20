@@ -146,13 +146,15 @@ SAME70_CXXFLAGS := -c -std=gnu++17 \
 	$(SAME70_INCLUDES) \
 	$(SAME70_DEFINES)
 
-# Optimise for size by default — flash is tight on Q20B
+# Note: -O0 causes "impossible constraints" errors in bn_mul.h MULADDC_X8_INIT
+# inline assembly because the register allocator runs out of registers.
+# -Og ("optimise for debugging") frees enough registers while keeping debuggability
 ifeq ($(DEBUG),1)
-SAME70_CFLAGS += -O0 -g3
-SAME70_CXXFLAGS += -O0 -g3
+SAME70_CFLAGS += -Og -g3
+SAME70_CXXFLAGS += -Og -g3
 else
-SAME70_CFLAGS += -Os
-SAME70_CXXFLAGS += -Os
+SAME70_CFLAGS += -O2
+SAME70_CXXFLAGS += -O2
 endif
 
 # ============================================================
