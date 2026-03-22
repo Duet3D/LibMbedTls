@@ -84,10 +84,9 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_SSL_SRV_C
 #define MBEDTLS_SSL_TLS_C
 
-/* Restrict to our chosen cipher suites to save code size */
+/* Restrict to a single cipher suite to save code size */
 #define MBEDTLS_SSL_CIPHERSUITES \
-    MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, \
-    MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
 
 /* SSL features we want */
 #define MBEDTLS_SSL_SERVER_NAME_INDICATION
@@ -103,10 +102,9 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_GCM_ALT
 
 /* ============================================================
- * ECC curves — secp256r1 and secp384r1 (Suite B)
+ * ECC curves — secp256r1 only (P-256)
  * ============================================================ */
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
-#define MBEDTLS_ECP_DP_SECP384R1_ENABLED
 
 /* ============================================================
  * Crypto modules — only what TLS 1.2 ECDHE-ECDSA + AES-GCM needs
@@ -127,8 +125,7 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_PK_C
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_SHA256_C
-#define MBEDTLS_SHA384_C
-#define MBEDTLS_SHA512_C
+// SHA-384/512 not needed — only AES-128-GCM-SHA256 cipher suite enabled
 
 /* X.509 certificate support */
 #define MBEDTLS_X509_CRT_PARSE_C
@@ -145,12 +142,15 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 /* Use ROM tables for AES to save ~8KB RAM at cost of ~8KB flash */
 #define MBEDTLS_AES_ROM_TABLES
 
-/* Limit MPI size to 384-bit curves (48 bytes) */
-#define MBEDTLS_MPI_MAX_SIZE    48
+/* Limit MPI size to 256-bit curves (32 bytes) */
+#define MBEDTLS_MPI_MAX_SIZE    32
 
-/* Smaller ECP window saves RAM at cost of speed */
-#define MBEDTLS_ECP_WINDOW_SIZE        2
-#define MBEDTLS_ECP_FIXED_POINT_OPTIM  0
+/* ECP window size: the static comb table in ecp_curves.c for P-256 was
+   generated for w=5. Setting this to 6 ensures the code can use the full
+   w=5 table for base-point multiplications (ecp_pick_window_size adds 1
+   for p==G, then clamps to MBEDTLS_ECP_WINDOW_SIZE). */
+#define MBEDTLS_ECP_WINDOW_SIZE        6
+#define MBEDTLS_ECP_FIXED_POINT_OPTIM  1
 
 /* NIST curve optimisation */
 #define MBEDTLS_ECP_NIST_OPTIM

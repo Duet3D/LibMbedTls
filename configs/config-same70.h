@@ -109,7 +109,6 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_ASN1_PARSE_C
 #define MBEDTLS_ASN1_WRITE_C
 #define MBEDTLS_BIGNUM_C
-#define MBEDTLS_BLOCK_CIPHER_C
 #define MBEDTLS_CIPHER_C
 #define MBEDTLS_CTR_DRBG_C
 #define MBEDTLS_ECDH_C
@@ -143,9 +142,11 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 /* Limit MPI size to 384-bit curves (48 bytes) */
 #define MBEDTLS_MPI_MAX_SIZE    48
 
-/* Smaller ECP window saves RAM at cost of speed */
-#define MBEDTLS_ECP_WINDOW_SIZE        2
-#define MBEDTLS_ECP_FIXED_POINT_OPTIM  0
+/* ECP window size: the static comb tables in ecp_curves.c were generated
+   for w=5 (P-256) and w=6 (P-384). Setting this to 6 ensures the code
+   can use the full tables for base-point multiplications. */
+#define MBEDTLS_ECP_WINDOW_SIZE        6
+#define MBEDTLS_ECP_FIXED_POINT_OPTIM  1
 
 /* NIST curve optimisation */
 #define MBEDTLS_ECP_NIST_OPTIM

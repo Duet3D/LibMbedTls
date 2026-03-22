@@ -71,7 +71,6 @@ SAME5x_PSA_SRCS := \
 
 # Additional support needed by the modules above
 SAME5x_SUPPORT_SRCS := \
-	library/block_cipher.c \
 	library/hmac_drbg.c
 
 SAME5x_C_SRCS := $(SAME5x_TLS_SRCS) $(SAME5x_X509_SRCS) $(SAME5x_CRYPTO_SRCS) $(SAME5x_PSA_SRCS) $(SAME5x_SUPPORT_SRCS)

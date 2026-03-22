@@ -5,11 +5,11 @@
  * Delegates to the CoreN2G AesGcm driver (aes_gcm_encrypt / aes_gcm_decrypt)
  * which uses the on-chip AES peripheral in GCM mode on SAME70 and SAME5x.
  *
- * The streaming API (starts / update_ad / update / finish) accumulates data
- * in the context's fixed buffers and dispatches to the hardware on finish().
+ * The streaming API (starts / update_ad / update / finish) stores a
+ * zero-copy pointer to the caller's buffer and dispatches to the hardware
+ * on finish().  Only one update() call is supported per starts/finish cycle.
  * This matches how mbedTLS 3.x TLS 1.2 drives GCM: the record layer calls
- * crypt_and_tag / auth_decrypt which internally use the streaming path with
- * exactly one update_ad and one update call per record.
+ * crypt_and_tag / auth_decrypt which bypass the streaming path entirely.
  */
 
 #include "mbedtls/build_info.h"
@@ -54,11 +54,21 @@ extern "C" int aes_gcm_decrypt(
 /* AesGcm reconfigures the shared AES peripheral; invalidate ECB cache afterwards. */
 extern "C" void aes_ecb_invalidate_cache() noexcept;
 
-/* Single shared staging buffer for mbedtls_gcm_starts/update/finish path.
- * Only one streaming context may own this at a time; contending contexts are
- * rejected with MBEDTLS_ERR_GCM_BAD_INPUT until ownership is released. */
-static unsigned char gcm_staging_buf[MBEDTLS_GCM_ALT_MAX_DATA_BYTES];
-static mbedtls_gcm_context *gcm_staging_owner = nullptr;
+static inline int map_gcm_hw_ret(int ret)
+{
+    if (ret <= -100)
+        return ret;
+    if (ret == 0)
+        return 0;
+    if (ret == -2)
+        return MBEDTLS_ERR_GCM_AUTH_FAILED;
+    return MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;
+}
+
+/* Single-owner guard: only one streaming context (starts/update/finish)
+ * may be active at a time because they all share the AES peripheral.
+ * One-shot crypt_and_tag / auth_decrypt do not touch this. */
+static mbedtls_gcm_context *gcm_streaming_owner = nullptr;
 
 /* ------------------------------------------------------------------ */
 
@@ -103,16 +113,17 @@ extern "C" int mbedtls_gcm_starts(mbedtls_gcm_context *ctx,
     if (iv_len != 12u)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
-    if (gcm_staging_owner != nullptr && gcm_staging_owner != ctx)
+    if (gcm_streaming_owner != nullptr && gcm_streaming_owner != ctx)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
-    gcm_staging_owner = ctx;
+    gcm_streaming_owner = ctx;
 
-    ctx->mode    = mode;
-    ctx->iv_len  = iv_len;
-    ctx->aad_len = 0;
-    ctx->buf_len = 0;
-    ctx->output  = nullptr;
+    ctx->mode     = mode;
+    ctx->iv_len   = iv_len;
+    ctx->aad_len  = 0;
+    ctx->data_len = 0;
+    ctx->input    = nullptr;
+    ctx->output   = nullptr;
     memcpy(ctx->iv, iv, iv_len);
     return 0;
 }
@@ -159,20 +170,19 @@ extern "C" int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
     if (output_size < input_length)
         return MBEDTLS_ERR_GCM_BUFFER_TOO_SMALL;
 
-    if (ctx->buf_len + input_length > MBEDTLS_GCM_ALT_MAX_DATA_BYTES)
+    /* Only one update() call per starts/finish cycle (zero-copy). */
+    if (ctx->data_len != 0)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
-    if (gcm_staging_owner != ctx)
+    if (gcm_streaming_owner != ctx)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
-    /* Accumulate input; remember output pointer for finish() */
-    memcpy(gcm_staging_buf + ctx->buf_len, input, input_length);
-    ctx->buf_len += input_length;
-    if (ctx->output == nullptr)
-        ctx->output = output;
+    /* Remember pointers; finish() passes them straight to hardware */
+    ctx->input    = input;
+    ctx->data_len = input_length;
+    ctx->output   = output;
 
     /* No output produced yet — finish() does the hardware operation */
-    (void)output;
     return 0;
 }
 
@@ -189,7 +199,7 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
     if (tag_len == 0u || tag_len > 16u)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
-    if (gcm_staging_owner != ctx)
+    if (gcm_streaming_owner != ctx)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
     /* mbedtls_gcm_crypt_and_tag passes the output buffer to update() and
@@ -197,7 +207,7 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
     unsigned char *out = (output != nullptr) ? output : ctx->output;
 
     /* output may be NULL if no data was passed to update() */
-    const size_t data_len = ctx->buf_len;
+    const size_t data_len = ctx->data_len;
     if (data_len > 0u)
     {
         if (out == nullptr)
@@ -213,7 +223,7 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
             ctx->key, ctx->key_len,
             ctx->iv,  ctx->iv_len,
             ctx->aad, ctx->aad_len,
-            gcm_staging_buf, data_len,
+            ctx->input, data_len,
             out,
             tag,      tag_len);
     }
@@ -225,19 +235,21 @@ extern "C" int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
             ctx->key, ctx->key_len,
             ctx->iv,  ctx->iv_len,
             ctx->aad, ctx->aad_len,
-            gcm_staging_buf, data_len,
+            ctx->input, data_len,
             out,
             tag,      tag_len);
     }
 
+    const int mappedRet = map_gcm_hw_ret(ret);
+
     aes_ecb_invalidate_cache();
 
-    gcm_staging_owner = nullptr;
+    gcm_streaming_owner = nullptr;
 
     if (output_length != nullptr)
         *output_length = (ret == 0) ? data_len : 0u;
 
-    return (ret == 0) ? 0 : MBEDTLS_ERR_GCM_BAD_INPUT;
+    return mappedRet;
 }
 
 extern "C" int mbedtls_gcm_crypt_and_tag(mbedtls_gcm_context *ctx,
@@ -289,9 +301,11 @@ extern "C" int mbedtls_gcm_crypt_and_tag(mbedtls_gcm_context *ctx,
                                       tag, tag_len);
     }
 
+    const int mappedRet = map_gcm_hw_ret(ret);
+
     aes_ecb_invalidate_cache();
 
-    return (ret == 0) ? 0 : MBEDTLS_ERR_GCM_BAD_INPUT;
+    return mappedRet;
 }
 
 extern "C" int mbedtls_gcm_auth_decrypt(mbedtls_gcm_context *ctx,
@@ -314,28 +328,37 @@ extern "C" int mbedtls_gcm_auth_decrypt(mbedtls_gcm_context *ctx,
     if (tag_len == 0u || tag_len > 16u)
         return MBEDTLS_ERR_GCM_BAD_INPUT;
 
-    /* Use the hardware one-shot decrypt which includes tag verification */
-    const int ret = aes_gcm_decrypt(ctx->key, ctx->key_len,
-                                    iv, iv_len,
-                                    add, add_len,
-                                    input, length,
-                                    output,
-                                    tag, tag_len);
+    uint8_t calc_tag[16] = {0};
+    int ret = aes_gcm_decrypt_and_tag(ctx->key, ctx->key_len,
+                                      iv, iv_len,
+                                      add, add_len,
+                                      input, length,
+                                      output,
+                                      calc_tag, tag_len);
+
+    if (ret == 0) {
+        uint8_t diff = 0;
+        for (size_t i = 0; i < tag_len; i++) {
+            diff |= calc_tag[i] ^ tag[i];
+        }
+        if (diff != 0) {
+            ret = -2;
+        }
+    }
+
+    const int mappedRet = map_gcm_hw_ret(ret);
 
     aes_ecb_invalidate_cache();
 
-    if (ret == -2)
-        return MBEDTLS_ERR_GCM_AUTH_FAILED;
-
-    return (ret == 0) ? 0 : MBEDTLS_ERR_GCM_BAD_INPUT;
+    return mappedRet;
 }
 
 extern "C" void mbedtls_gcm_free(mbedtls_gcm_context *ctx)
 {
     if (ctx == nullptr)
         return;
-    if (gcm_staging_owner == ctx)
-        gcm_staging_owner = nullptr;
+    if (gcm_streaming_owner == ctx)
+        gcm_streaming_owner = nullptr;
     mbedtls_platform_zeroize(ctx, sizeof(*ctx));
 }
 

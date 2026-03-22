@@ -71,7 +71,6 @@ SAME70_PSA_SRCS := \
 
 # Additional support needed by the modules above
 SAME70_SUPPORT_SRCS := \
-	library/block_cipher.c \
 	library/hmac_drbg.c
 
 SAME70_C_SRCS := $(SAME70_TLS_SRCS) $(SAME70_X509_SRCS) $(SAME70_CRYPTO_SRCS) $(SAME70_PSA_SRCS) $(SAME70_SUPPORT_SRCS)
