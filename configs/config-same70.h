@@ -154,8 +154,8 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 /* ============================================================
  * Buffer sizes — SAME70 has 512 KB RAM so we can afford larger buffers
  * ============================================================ */
-#define MBEDTLS_SSL_IN_CONTENT_LEN     4096
-#define MBEDTLS_SSL_OUT_CONTENT_LEN    4096
+#define MBEDTLS_SSL_IN_CONTENT_LEN     2048
+#define MBEDTLS_SSL_OUT_CONTENT_LEN    2048
 #define MBEDTLS_SSL_CACHE_DEFAULT_MAX_ENTRIES  4
 #define MBEDTLS_SSL_CACHE_DEFAULT_TIMEOUT      3600
 
