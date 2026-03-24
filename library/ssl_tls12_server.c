@@ -1542,7 +1542,8 @@ read_record_header:
     }
 
 #if (defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT) || defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)) \
-    && MBEDTLS_SSL_IN_CONTENT_LEN < 16384
+    && MBEDTLS_SSL_IN_CONTENT_LEN < 16384 \
+    && defined(MBEDTLS_SSL_REJECT_MISSING_RECORD_SIZE_EXT)
     /* Reject clients that offer neither record_size_limit (RFC 8449) nor
      * max_fragment_length (RFC 6066).  Without one of these extensions we
      * cannot enforce our reduced input buffer and the peer may send 16 KB

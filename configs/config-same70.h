@@ -84,7 +84,9 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 
 /* SSL features */
 #define MBEDTLS_SSL_SERVER_NAME_INDICATION
+#define MBEDTLS_SSL_MAX_FRAGMENT_LENGTH          /* RFC 6066: max fragment length */
 #define MBEDTLS_SSL_RECORD_SIZE_LIMIT           /* RFC 8449: record size limit */
+//#define MBEDTLS_SSL_REJECT_MISSING_RECORD_SIZE_EXT  /* reject clients without record_size_limit or max_fragment_length */
 #define MBEDTLS_SSL_CACHE_C
 #define MBEDTLS_SSL_SESSION_TICKETS
 #define MBEDTLS_SSL_TICKET_C

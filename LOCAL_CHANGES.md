@@ -118,24 +118,28 @@ it, TLS 1.2 browsers send 16 KB records that overflow the 2 KB input buffer.
    value, so MFL=4096 with a 2 KB input buffer would cause oversized records.
    Now rejects with `illegal_parameter` alert if the value is too large.
 
-5. Mandatory record size extension check (only when
+5. Optional record size extension check (gated by
+   `MBEDTLS_SSL_REJECT_MISSING_RECORD_SIZE_EXT`, only when
    `MBEDTLS_SSL_IN_CONTENT_LEN < 16384`): after parsing all ClientHello
    extensions, the handshake is aborted with `missing_extension` (alert 109)
    if the client offered neither `record_size_limit` (RFC 8449) nor
    `max_fragment_length` (RFC 6066).  Without one of these extensions the
    server cannot enforce `MBEDTLS_SSL_IN_CONTENT_LEN` and the peer may
    send 16 KB records that overflow the input buffer.  When the input
-   buffer is full-sized (>= 16 KB) the check is skipped.
+   buffer is full-sized (>= 16 KB) the check is skipped.  Disabled by
+   default because Chromium-based browsers do not send `record_size_limit`
+   as of early 2026.
 
-### library/ssl_tls13_server.c - mandatory record_size_limit
+### library/ssl_tls13_server.c - optional record_size_limit check
 
-After parsing all ClientHello extensions, the handshake is aborted with
-`missing_extension` (alert 109) if the client did not offer
-`record_size_limit` (RFC 8449).  TLS 1.3 replaced `max_fragment_length`
-with `record_size_limit`, so only the latter is checked.  Without the
-extension the peer may send 16 KB records that overflow
-`MBEDTLS_SSL_IN_CONTENT_LEN`.  Only active when
-`MBEDTLS_SSL_IN_CONTENT_LEN < 16384`.
+Gated by `MBEDTLS_SSL_REJECT_MISSING_RECORD_SIZE_EXT` (only when
+`MBEDTLS_SSL_IN_CONTENT_LEN < 16384`): after parsing all ClientHello
+extensions, the handshake is aborted with `missing_extension` (alert 109)
+if the client did not offer `record_size_limit` (RFC 8449).  TLS 1.3
+replaced `max_fragment_length` with `record_size_limit`, so only the
+latter is checked.  Without the extension the peer may send 16 KB records
+that overflow `MBEDTLS_SSL_IN_CONTENT_LEN`.  Disabled by default because
+Chromium-based browsers do not send `record_size_limit` as of early 2026.
 
 ### library/entropy.c
 
