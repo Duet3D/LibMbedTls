@@ -1685,6 +1685,19 @@ static int ssl_tls13_parse_client_hello(mbedtls_ssl_context *ssl,
     MBEDTLS_SSL_PRINT_EXTS(3, MBEDTLS_SSL_HS_CLIENT_HELLO,
                            handshake->received_extensions);
 
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT) && MBEDTLS_SSL_IN_CONTENT_LEN < 16384
+    /* TLS 1.3 replaced max_fragment_length with record_size_limit (RFC 8449).
+     * Without it we cannot enforce our reduced input buffer and the peer
+     * may send 16 KB records that overflow MBEDTLS_SSL_IN_CONTENT_LEN.
+     * When the input buffer is full-sized (>= 16 KB) this is not needed. */
+    if (!(handshake->received_extensions & MBEDTLS_SSL_EXT_MASK(RECORD_SIZE_LIMIT))) {
+        MBEDTLS_SSL_DEBUG_MSG(1, ("missing record_size_limit extension"));
+        MBEDTLS_SSL_PEND_FATAL_ALERT(MBEDTLS_SSL_ALERT_MSG_MISSING_EXTENSION,
+                                     MBEDTLS_ERR_SSL_HANDSHAKE_FAILURE);
+        return MBEDTLS_ERR_SSL_HANDSHAKE_FAILURE;
+    }
+#endif
+
     ret = mbedtls_ssl_add_hs_hdr_to_checksum(ssl,
                                              MBEDTLS_SSL_HS_CLIENT_HELLO,
                                              p - buf);

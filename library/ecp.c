@@ -79,6 +79,13 @@
 
 #include "ecp_internal_alt.h"
 
+#if defined(MBEDTLS_ECP_MUL_ALT)
+/* Hardware scalar multiplication — returns 0 on success,
+   MBEDTLS_ERR_ECP_FEATURE_UNAVAILABLE to fall through to software. */
+int mbedtls_ecp_mul_alt(mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+                         const mbedtls_mpi *m, const mbedtls_ecp_point *P);
+#endif
+
 #if defined(MBEDTLS_SELF_TEST)
 /*
  * Counts of point addition and doubling, and field multiplications.
@@ -2644,6 +2651,12 @@ static int ecp_mul_restartable_internal(mbedtls_ecp_group *grp, mbedtls_ecp_poin
 #endif
 #if defined(MBEDTLS_ECP_SHORT_WEIERSTRASS_ENABLED)
     if (mbedtls_ecp_get_type(grp) == MBEDTLS_ECP_TYPE_SHORT_WEIERSTRASS) {
+#if defined(MBEDTLS_ECP_MUL_ALT)
+        ret = mbedtls_ecp_mul_alt(grp, R, m, P);
+        if (ret != MBEDTLS_ERR_ECP_FEATURE_UNAVAILABLE) {
+            goto cleanup;
+        }
+#endif
         MBEDTLS_MPI_CHK(ecp_mul_comb(grp, R, m, P, f_rng, p_rng, rs_ctx));
     }
 #endif

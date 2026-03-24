@@ -31,7 +31,7 @@
 								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1500000108" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1500000109" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME54P20A__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same5x.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1500000110" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -43,6 +43,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/tf-psa-crypto/drivers/builtin/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x/pukcc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/atmel/SAME54_DFP/1.1.134/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/arm/CMSIS/5.4.0/CMSIS/Core/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
@@ -58,7 +59,7 @@
 								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1500000116" name="Debug level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.1500000117" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME54P20A__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same5x.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1500000118" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -69,6 +70,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/tf-psa-crypto/drivers/builtin/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/tf-psa-crypto/drivers/builtin/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x/pukcc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/atmel/SAME54_DFP/1.1.134/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/arm/CMSIS/5.4.0/CMSIS/Core/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
@@ -123,7 +126,7 @@
 								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1500000308" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1500000309" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same70.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1500000310" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -150,7 +153,7 @@
 								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1500000315" name="Debug level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.1500000316" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same70.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1500000317" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -218,7 +221,7 @@
 								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1500000508" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1500000509" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same70.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1500000510" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -246,7 +249,7 @@
 								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1500000516" name="Debug level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.1500000517" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME70Q20B__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same70.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1500000518" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -316,7 +319,7 @@
 								<option defaultValue="gnu.c.debugging.level.none" id="gnu.c.compiler.option.debugging.level.1500000708" name="Debug level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1500000709" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME54P20A__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same5x.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1500000710" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -328,6 +331,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/tf-psa-crypto/drivers/builtin/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x/pukcc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/atmel/SAME54_DFP/1.1.134/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/arm/CMSIS/5.4.0/CMSIS/Core/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
@@ -343,7 +347,7 @@
 								<option defaultValue="gnu.cpp.compiler.debugging.level.none" id="gnu.cpp.compiler.option.debugging.level.1500000716" name="Debug level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.1500000717" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__SAME54P20A__"/>
-									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-rrf.h\&quot;"/>
+									<listOptionValue builtIn="false" value="MBEDTLS_CONFIG_FILE=\&quot;config-same5x.h\&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1500000718" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/configs}&quot;"/>
@@ -354,6 +358,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/tf-psa-crypto/drivers/builtin/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/tf-psa-crypto/drivers/builtin/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/SAME5x_C21/SAME5x/pukcc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/atmel/SAME54_DFP/1.1.134/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CoreN2G/src/arm/CMSIS/5.4.0/CMSIS/Core/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>

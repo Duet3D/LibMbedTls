@@ -14,8 +14,11 @@ SAME5x_TLS_SRCS := \
 	library/ssl_cache.c \
 	library/ssl_ciphersuites.c \
 	library/ssl_msg.c \
+	library/ssl_ticket.c \
 	library/ssl_tls.c \
-	library/ssl_tls12_server.c
+	library/ssl_tls13_generic.c \
+	library/ssl_tls13_keys.c \
+	library/ssl_tls13_server.c
 
 # X.509 certificate handling
 SAME5x_X509_SRCS := \
@@ -80,6 +83,7 @@ SAME5x_CPP_SRCS := \
 	drivers/entropy_hardware.cpp \
 	drivers/aes_hardware.cpp \
 	drivers/aes_gcm_hardware.cpp \
+	drivers/pukcc_hardware.cpp \
 	drivers/platform_snprintf.cpp
 
 # Include paths

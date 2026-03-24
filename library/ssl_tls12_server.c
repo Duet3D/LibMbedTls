@@ -336,6 +336,19 @@ static int ssl_parse_ecjpake_kkpp(mbedtls_ssl_context *ssl,
 #endif /* MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED */
 
 #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
+
+/* Map MFL code to fragment length.  Must match ssl_mfl_code_to_length(). */
+static unsigned int ssl_mfl_code_to_bytes(unsigned char code)
+{
+    switch (code) {
+        case MBEDTLS_SSL_MAX_FRAG_LEN_512:  return 512;
+        case MBEDTLS_SSL_MAX_FRAG_LEN_1024: return 1024;
+        case MBEDTLS_SSL_MAX_FRAG_LEN_2048: return 2048;
+        case MBEDTLS_SSL_MAX_FRAG_LEN_4096: return 4096;
+        default:                            return 0;
+    }
+}
+
 MBEDTLS_CHECK_RETURN_CRITICAL
 static int ssl_parse_max_fragment_length_ext(mbedtls_ssl_context *ssl,
                                              const unsigned char *buf,
@@ -343,6 +356,19 @@ static int ssl_parse_max_fragment_length_ext(mbedtls_ssl_context *ssl,
 {
     if (len != 1 || buf[0] >= MBEDTLS_SSL_MAX_FRAG_LEN_INVALID) {
         MBEDTLS_SSL_DEBUG_MSG(1, ("bad client hello message"));
+        mbedtls_ssl_send_alert_message(ssl, MBEDTLS_SSL_ALERT_LEVEL_FATAL,
+                                       MBEDTLS_SSL_ALERT_MSG_ILLEGAL_PARAMETER);
+        return MBEDTLS_ERR_SSL_ILLEGAL_PARAMETER;
+    }
+
+    /* Reject MFL values that exceed our input buffer.  RFC 6066 does not
+     * allow the server to negotiate a smaller value than the client
+     * requested, so we must reject rather than clamp. */
+    if (buf[0] != MBEDTLS_SSL_MAX_FRAG_LEN_NONE &&
+        ssl_mfl_code_to_bytes(buf[0]) > MBEDTLS_SSL_IN_CONTENT_LEN) {
+        MBEDTLS_SSL_DEBUG_MSG(1,
+            ("client max_fragment_length %u exceeds input buffer %d",
+             ssl_mfl_code_to_bytes(buf[0]), MBEDTLS_SSL_IN_CONTENT_LEN));
         mbedtls_ssl_send_alert_message(ssl, MBEDTLS_SSL_ALERT_LEVEL_FATAL,
                                        MBEDTLS_SSL_ALERT_MSG_ILLEGAL_PARAMETER);
         return MBEDTLS_ERR_SSL_ILLEGAL_PARAMETER;
@@ -1514,6 +1540,34 @@ read_record_header:
         ext_len -= 4 + ext_size;
         ext += 4 + ext_size;
     }
+
+#if (defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT) || defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)) \
+    && MBEDTLS_SSL_IN_CONTENT_LEN < 16384
+    /* Reject clients that offer neither record_size_limit (RFC 8449) nor
+     * max_fragment_length (RFC 6066).  Without one of these extensions we
+     * cannot enforce our reduced input buffer and the peer may send 16 KB
+     * records that overflow MBEDTLS_SSL_IN_CONTENT_LEN.
+     * When the input buffer is full-sized (>= 16 KB) this is not needed. */
+    {
+        int has_record_size_limit = 0;
+        int has_max_fragment_length = 0;
+#if defined(MBEDTLS_SSL_RECORD_SIZE_LIMIT)
+        has_record_size_limit = ssl->session_negotiate->record_size_limit
+                                    >= MBEDTLS_SSL_RECORD_SIZE_LIMIT_MIN;
+#endif
+#if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
+        has_max_fragment_length = ssl->session_negotiate->mfl_code
+                                    != MBEDTLS_SSL_MAX_FRAG_LEN_NONE;
+#endif
+        if (!has_record_size_limit && !has_max_fragment_length) {
+            MBEDTLS_SSL_DEBUG_MSG(1,
+                ("missing record_size_limit and max_fragment_length extensions"));
+            mbedtls_ssl_send_alert_message(ssl, MBEDTLS_SSL_ALERT_LEVEL_FATAL,
+                                           MBEDTLS_SSL_ALERT_MSG_MISSING_EXTENSION);
+            return MBEDTLS_ERR_SSL_HANDSHAKE_FAILURE;
+        }
+    }
+#endif
 
 #if defined(MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED)
 

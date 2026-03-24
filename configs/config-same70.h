@@ -1,8 +1,8 @@
 /**
- * Custom Mbed TLS configuration for RepRapFirmware — SAME70 (Duet 3 MB6HC / MB6XD)
+ * Custom Mbed TLS configuration for RepRapFirmware - SAME70 (Duet 3 MB6HC / MB6XD)
  *
- * Minimal TLS 1.2 server configuration for HTTPS support on embedded ARM targets.
- * Based on the Suite B profile (RFC 6460) — ECC only, no RSA.
+ * Minimal TLS 1.3 server configuration for HTTPS support on embedded ARM targets.
+ * Based on the Suite B profile (RFC 6460) - ECC only, no RSA.
  *
  * Target MCU: SAME70Q20B (Cortex-M7, 512 KB RAM)
  * Has hardware AES with GCM support.
@@ -19,7 +19,7 @@
 #define MBEDTLS_HAVE_ASM
 
 /* ============================================================
- * Platform — no POSIX, we use LwIP + FreeRTOS
+ * Platform - no POSIX, we use LwIP + FreeRTOS
  * ============================================================ */
 #define MBEDTLS_PLATFORM_C
 
@@ -68,26 +68,28 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
  * TLS protocol configuration
  * ============================================================ */
 
-/* Key exchange: ECDHE-ECDSA only (no RSA, no PSK) */
-#define MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
-
-/* TLS 1.2 only */
-#define MBEDTLS_SSL_PROTO_TLS1_2
+/* TLS 1.3 only */
+#undef MBEDTLS_SSL_PROTO_TLS1_2
+#define MBEDTLS_SSL_PROTO_TLS1_3
+#define MBEDTLS_SSL_TLS1_3_COMPATIBILITY_MODE           /* RFC 8446 SD.4 middlebox compat */
+#define MBEDTLS_SSL_TLS1_3_KEY_EXCHANGE_MODE_EPHEMERAL_ENABLED
+#define MBEDTLS_SSL_TLS1_3_KEY_EXCHANGE_MODE_PSK_EPHEMERAL_ENABLED
 
 /* TLS server only */
 #define MBEDTLS_SSL_SRV_C
 #define MBEDTLS_SSL_TLS_C
 
-/* Restrict to our chosen cipher suites to save code size */
-#define MBEDTLS_SSL_CIPHERSUITES \
-    MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, \
-    MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+/* TLS 1.3 supports TLS_AES_128_GCM_SHA256 and TLS_AES_256_GCM_SHA384;
+ * MBEDTLS_SSL_CIPHERSUITES is a TLS 1.2-only macro and has no effect here. */
 
-/* SSL features we want */
+/* SSL features */
 #define MBEDTLS_SSL_SERVER_NAME_INDICATION
-#define MBEDTLS_SSL_RECORD_SIZE_LIMIT   /* RFC 8449 backported to TLS 1.2: server advertises IN_CONTENT_LEN so browsers limit their record size */
+#define MBEDTLS_SSL_RECORD_SIZE_LIMIT           /* RFC 8449: record size limit */
 #define MBEDTLS_SSL_CACHE_C
+#define MBEDTLS_SSL_SESSION_TICKETS
+#define MBEDTLS_SSL_TICKET_C
 #define MBEDTLS_SSL_ALL_ALERT_MESSAGES
+#define MBEDTLS_SSL_KEEP_PEER_CERTIFICATE       /* Required for TLS 1.3 */
 
 /* Use hardware AES-ECB and AES-GCM.
    AES_ALT (aes_hardware.cpp + CoreN2G AesEcb.cpp) replaces software aes.c.
@@ -97,13 +99,18 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_GCM_ALT
 
 /* ============================================================
- * ECC curves — secp256r1 and secp384r1 (Suite B)
+ * ECC curves - P-256, P-384 (Suite B signatures + ECDHE) and X25519 (ECDHE)
+ *
+ * X25519 is the preferred key exchange curve for all modern browsers.
+ * Without it, clients that send an X25519 key_share in ClientHello
+ * trigger a HelloRetryRequest, adding an extra round trip per connection.
  * ============================================================ */
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
 #define MBEDTLS_ECP_DP_SECP384R1_ENABLED
+#define MBEDTLS_ECP_DP_CURVE25519_ENABLED
 
 /* ============================================================
- * Crypto modules — only what TLS 1.2 ECDHE-ECDSA + AES-GCM needs
+ * Crypto modules - only what TLS 1.3 ECDHE-ECDSA + AES-GCM needs
  * ============================================================ */
 #define MBEDTLS_AES_C
 #define MBEDTLS_ASN1_PARSE_C
@@ -133,6 +140,13 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_PEM_PARSE_C
 
 /* ============================================================
+ * PSA Crypto support (required for TLS 1.3)
+ * ============================================================ */
+#define MBEDTLS_PSA_CRYPTO_CONFIG
+#define MBEDTLS_PSA_CRYPTO_C
+#define MBEDTLS_PSA_CRYPTO_CLIENT
+
+/* ============================================================
  * Memory optimisations for embedded
  * ============================================================ */
 
@@ -152,7 +166,7 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 #define MBEDTLS_ECP_NIST_OPTIM
 
 /* ============================================================
- * Buffer sizes — SAME70 has 512 KB RAM so we can afford larger buffers
+ * Buffer sizes - SAME70 has 512 KB RAM so we can afford larger buffers
  * ============================================================ */
 #define MBEDTLS_SSL_IN_CONTENT_LEN     2048
 #define MBEDTLS_SSL_OUT_CONTENT_LEN    2048
@@ -171,7 +185,7 @@ int mbedtls_platform_vsnprintf(char *s, size_t n, const char *format, va_list ar
 //#define MBEDTLS_DEBUG_C                        // enable for debugging only
 //#define MBEDTLS_ERROR_C                        // enable for debugging only
 
-/* Do NOT include check_config.h here — build_info.h handles the correct
- * include order: user config → config_adjust_* → check_config.h */
+/* Do NOT include check_config.h here - build_info.h handles the correct
+ * include order: user config -> config_adjust_* -> check_config.h */
 
 #endif /* MBEDTLS_CONFIG_SAME70_H */

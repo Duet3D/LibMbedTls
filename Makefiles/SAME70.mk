@@ -14,8 +14,11 @@ SAME70_TLS_SRCS := \
 	library/ssl_cache.c \
 	library/ssl_ciphersuites.c \
 	library/ssl_msg.c \
+	library/ssl_ticket.c \
 	library/ssl_tls.c \
-	library/ssl_tls12_server.c
+	library/ssl_tls13_generic.c \
+	library/ssl_tls13_keys.c \
+	library/ssl_tls13_server.c
 
 # X.509 certificate handling
 SAME70_X509_SRCS := \
