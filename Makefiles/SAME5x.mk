@@ -115,7 +115,7 @@ SAME5x_DEFINES := \
 # ============================================================
 # Compiler flags — Cortex-M4 with FPv4
 # ============================================================
-SAME5x_CFLAGS := -c -std=gnu11 \
+SAME5x_CFLAGS := -c \
 	-mcpu=cortex-m4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
@@ -130,10 +130,12 @@ SAME5x_CFLAGS := -c -std=gnu11 \
 	-Werror=return-type \
 	-Werror=implicit \
 	-fsingle-precision-constant \
+	-fstack-usage \
+	-fdump-rtl-expand \
 	$(SAME5x_INCLUDES) \
 	$(SAME5x_DEFINES)
 
-SAME5x_CXXFLAGS := -c -std=gnu++17 \
+SAME5x_CXXFLAGS := -c \
 	-mcpu=cortex-m4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
@@ -141,24 +143,28 @@ SAME5x_CXXFLAGS := -c -std=gnu++17 \
 	-mfp16-format=ieee \
 	-ffunction-sections \
 	-fdata-sections \
-	-fno-exceptions \
+	-fno-threadsafe-statics \
 	-fno-rtti \
+	-fexceptions \
 	-nostdlib \
 	-Wall \
 	-Wundef \
 	-Wdouble-promotion \
 	-Werror=return-type \
+	-Wsuggest-override \
 	-fsingle-precision-constant \
+	-fstack-usage \
+	-fdump-rtl-expand \
 	$(SAME5x_INCLUDES) \
 	$(SAME5x_DEFINES)
 
-# Optimise for size by default
+# Optimise for speed by default
 ifeq ($(DEBUG),1)
 SAME5x_CFLAGS += -O0 -g3
 SAME5x_CXXFLAGS += -O0 -g3
 else
-SAME5x_CFLAGS += -Os
-SAME5x_CXXFLAGS += -Os
+SAME5x_CFLAGS += -O2
+SAME5x_CXXFLAGS += -O2
 endif
 
 # ============================================================
