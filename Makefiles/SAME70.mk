@@ -111,12 +111,13 @@ SAME70_DEFINES := \
 # ============================================================
 # Compiler flags
 # ============================================================
-SAME70_CFLAGS := -c -std=gnu11 \
+SAME70_CFLAGS := -c \
 	-mcpu=cortex-m7 \
 	-mthumb \
 	-mfpu=fpv5-d16 \
 	-mfloat-abi=hard \
 	-mfp16-format=ieee \
+	-mno-unaligned-access \
 	-ffunction-sections \
 	-fdata-sections \
 	-nostdlib \
@@ -126,25 +127,32 @@ SAME70_CFLAGS := -c -std=gnu11 \
 	-Werror=return-type \
 	-Werror=implicit \
 	-fsingle-precision-constant \
+	-fstack-usage \
+	-fdump-rtl-expand \
 	$(SAME70_INCLUDES) \
 	$(SAME70_DEFINES)
 
-SAME70_CXXFLAGS := -c -std=gnu++17 \
+SAME70_CXXFLAGS := -c \
 	-mcpu=cortex-m7 \
 	-mthumb \
 	-mfpu=fpv5-d16 \
 	-mfloat-abi=hard \
 	-mfp16-format=ieee \
+	-mno-unaligned-access \
 	-ffunction-sections \
 	-fdata-sections \
-	-fno-exceptions \
+	-fno-threadsafe-statics \
 	-fno-rtti \
+	-fexceptions \
 	-nostdlib \
 	-Wall \
 	-Wundef \
 	-Wdouble-promotion \
 	-Werror=return-type \
+	-Wsuggest-override \
 	-fsingle-precision-constant \
+	-fstack-usage \
+	-fdump-rtl-expand \
 	$(SAME70_INCLUDES) \
 	$(SAME70_DEFINES)
 

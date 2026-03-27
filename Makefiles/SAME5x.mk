@@ -130,10 +130,11 @@ SAME5x_CFLAGS := -c \
 	-Werror=implicit \
 	-fsingle-precision-constant \
 	-fstack-usage \
+	-fdump-rtl-expand \
 	$(SAME5x_INCLUDES) \
 	$(SAME5x_DEFINES)
 
-SAME5x_CXXFLAGS := -c -std=gnu++17 \
+SAME5x_CXXFLAGS := -c \
 	-mcpu=cortex-m4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
@@ -151,10 +152,11 @@ SAME5x_CXXFLAGS := -c -std=gnu++17 \
 	-Wsuggest-override \
 	-fsingle-precision-constant \
 	-fstack-usage \
+	-fdump-rtl-expand \
 	$(SAME5x_INCLUDES) \
 	$(SAME5x_DEFINES)
 
-# Optimise for size in debug, -O2 in release
+# Optimise for speed by default
 ifeq ($(DEBUG),1)
 SAME5x_CFLAGS += -O0 -g3
 SAME5x_CXXFLAGS += -O0 -g3
