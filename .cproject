@@ -79,6 +79,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RRFLibraries/src}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1500000119" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mfp16-format=ieee -ffunction-sections -fdata-sections -fno-threadsafe-statics -fno-rtti -fexceptions -nostdlib -Wundef -Wdouble-promotion -Werror=return-type -Wsuggest-override -fsingle-precision-constant &quot;-Wa,-ahl=$*.s&quot; -fstack-usage -fdump-rtl-expand" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.warnings.toerrors.1554331001" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wshadow.100461934" superClass="gnu.cpp.compiler.option.warnings.wshadow" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wnoexccept.853638203" superClass="gnu.cpp.compiler.option.warnings.wnoexccept" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wsignpromo.384147040" superClass="gnu.cpp.compiler.option.warnings.wsignpromo" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wundef.1995220748" superClass="gnu.cpp.compiler.option.warnings.wundef" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.2525886" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.dialect.flags.2087183772" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++20" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1500000120" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1500000121" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
@@ -173,6 +180,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RRFLibraries/src}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1500000318" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -mfp16-format=ieee -mno-unaligned-access -ffunction-sections -fdata-sections -fno-threadsafe-statics -fno-rtti -fexceptions -nostdlib -Wundef -Wdouble-promotion -Werror=return-type -Wsuggest-override -fsingle-precision-constant &quot;-Wa,-ahl=$*.s&quot; -fstack-usage -fdump-rtl-expand" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.warnings.toerrors.2146544648" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wshadow.1781700641" superClass="gnu.cpp.compiler.option.warnings.wshadow" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wnoexccept.725186656" superClass="gnu.cpp.compiler.option.warnings.wnoexccept" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wsignpromo.2082830215" superClass="gnu.cpp.compiler.option.warnings.wsignpromo" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wundef.2052112189" superClass="gnu.cpp.compiler.option.warnings.wundef" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.22342381" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.dialect.flags.1654194229" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++20" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1500000319" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1500000320" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
@@ -271,6 +285,12 @@
 								<option id="gnu.cpp.compiler.option.other.other.1500000519" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -mfp16-format=ieee -mno-unaligned-access -ffunction-sections -fdata-sections -fno-threadsafe-statics -fno-rtti -fexceptions -nostdlib -Wundef -Wdouble-promotion -Werror=return-type -Wsuggest-override -fsingle-precision-constant &quot;-Wa,-ahl=$*.s&quot; -fstack-usage -fdump-rtl-expand" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.dialect.std.1500000520" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.1500000521" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" useByScannerDiscovery="false" value="" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.warnings.toerrors.306867785" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wshadow.1394149556" superClass="gnu.cpp.compiler.option.warnings.wshadow" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wnoexccept.410416854" superClass="gnu.cpp.compiler.option.warnings.wnoexccept" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wsignpromo.58823909" superClass="gnu.cpp.compiler.option.warnings.wsignpromo" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wundef.38198577" superClass="gnu.cpp.compiler.option.warnings.wundef" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.dialect.flags.1691029878" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++20" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1500000522" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1500000523" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
@@ -368,6 +388,13 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1500000719" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mfp16-format=ieee -ffunction-sections -fdata-sections -fno-threadsafe-statics -fno-rtti -fexceptions -nostdlib -Wundef -Wdouble-promotion -Werror=return-type -Wsuggest-override -fsingle-precision-constant &quot;-Wa,-ahl=$*.s&quot; -fstack-usage -fdump-rtl-expand" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.1500000720" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" useByScannerDiscovery="false" value="" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.warnings.toerrors.193266270" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wshadow.1298176097" superClass="gnu.cpp.compiler.option.warnings.wshadow" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wnoexccept.2010064785" superClass="gnu.cpp.compiler.option.warnings.wnoexccept" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wsignpromo.1417896515" superClass="gnu.cpp.compiler.option.warnings.wsignpromo" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.wundef.968520471" superClass="gnu.cpp.compiler.option.warnings.wundef" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.379370418" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.dialect.flags.101578379" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++20" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1500000721" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1500000722" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
