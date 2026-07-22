@@ -16,7 +16,7 @@ function(libmbedtls_add_library OUT_TARGET)
         message(FATAL_ERROR "libmbedtls_add_library: unknown arguments: ${ARG_UNPARSED_ARGUMENTS}")
     endif()
 
-    get_enabled_features(_enabled_features)
+    get_enabled_features(_enabled_features ${LIBMBEDTLS_LIBRARY_FLAGS})
     make_library_name(_target "LibMbedTls" STATIC ${ARG_MCU} ${_enabled_features})
     set(${OUT_TARGET} "${_target}" PARENT_SCOPE)
     if(TARGET ${_target})
