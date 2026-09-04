@@ -134,7 +134,7 @@ SAME5x_CFLAGS := -c \
 	$(SAME5x_INCLUDES) \
 	$(SAME5x_DEFINES)
 
-SAME5x_CXXFLAGS := -c \
+SAME5x_CXXFLAGS := -c -std=c++20\
 	-mcpu=cortex-m4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
@@ -149,6 +149,10 @@ SAME5x_CXXFLAGS := -c \
 	-Wundef \
 	-Wdouble-promotion \
 	-Werror=return-type \
+	-Werror \
+	-Wnoexcept \
+	-Wshadow \
+	-Wsign-promo \
 	-Wsuggest-override \
 	-fsingle-precision-constant \
 	-fstack-usage \

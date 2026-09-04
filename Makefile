@@ -1,8 +1,10 @@
 # LibMbedTls Master Makefile
 # Builds Mbed TLS 3.6 library for various MCU configurations
 
-# Cross-compiler toolchain
-CROSS_COMPILE ?= ../arm-gnu-toolchain-15.2.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-
+# Cross-compiler toolchain.
+# RepRapFirmware exports CROSS_COMPILE when building this as a submodule.
+# When building LibMbedTls standalone, fall back to a toolchain on PATH.
+CROSS_COMPILE ?= arm-none-eabi-
 export CROSS_COMPILE
 
 # Toolchain commands
