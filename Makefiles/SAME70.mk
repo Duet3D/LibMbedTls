@@ -132,7 +132,7 @@ SAME70_CFLAGS := -c \
 	$(SAME70_INCLUDES) \
 	$(SAME70_DEFINES)
 
-SAME70_CXXFLAGS := -c \
+SAME70_CXXFLAGS := -c -std=c++20\
 	-mcpu=cortex-m7 \
 	-mthumb \
 	-mfpu=fpv5-d16 \
@@ -150,6 +150,10 @@ SAME70_CXXFLAGS := -c \
 	-Wdouble-promotion \
 	-Werror=return-type \
 	-Wsuggest-override \
+	-Werror \
+	-Wnoexcept \
+	-Wshadow \
+	-Wsign-promo \
 	-fsingle-precision-constant \
 	-fstack-usage \
 	-fdump-rtl-expand \
