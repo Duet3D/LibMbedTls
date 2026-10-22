@@ -64,6 +64,16 @@ target_compile_definitions(LibMbedTls
 
 target_link_libraries(LibMbedTls PRIVATE Duet::CoreN2G Duet::RRFLibraries)
 
+set(_cxx_options
+    -fno-threadsafe-statics
+    -fno-rtti
+    -fexceptions
+    -Wsuggest-override
+    -Werror
+    -Wnoexcept
+    -Wshadow
+    -Wsign-promo)
+
 target_compile_options(LibMbedTls PRIVATE
     -fsingle-precision-constant
     -Wall
@@ -71,7 +81,7 @@ target_compile_options(LibMbedTls PRIVATE
     -Wdouble-promotion
     -Werror=return-type
     $<$<COMPILE_LANGUAGE:C>:-Werror=implicit>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics;-fno-rtti;-fexceptions;-Wsuggest-override;-Werror;-Wnoexcept;-Wshadow;-Wsign-promo>
+    "$<$<COMPILE_LANGUAGE:CXX>:${_cxx_options}>"
     -fstack-usage
     -fdump-rtl-expand
     # __FILE__ relative to the library root, so the image does not depend on the checkout location
