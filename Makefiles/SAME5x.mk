@@ -124,6 +124,7 @@ SAME5x_CFLAGS := -c \
 	-ffunction-sections \
 	-fdata-sections \
 	-nostdlib \
+	-Wall \
 	-Wundef \
 	-Wdouble-promotion \
 	-Werror=return-type \
@@ -146,6 +147,7 @@ SAME5x_CXXFLAGS := -c -std=c++20\
 	-fno-rtti \
 	-fexceptions \
 	-nostdlib \
+	-Wall \
 	-Wundef \
 	-Wdouble-promotion \
 	-Werror=return-type \
