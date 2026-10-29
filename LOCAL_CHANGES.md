@@ -66,6 +66,11 @@ Non-P-256 curves and PUKCC errors fall through to software.
 
 Per-target Makefiles listing the mbedTLS source files to compile.
 
+### duet/CMakeLists.txt
+
+CMake build of the same sources and drivers, as the `Duet::LibMbedTls` target. It is in its own
+directory because the upstream `CMakeLists.txt` stays at the root, unused.
+
 ### .cproject + .project
 
 Eclipse CDT project files for the library.
